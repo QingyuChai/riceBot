@@ -31,8 +31,8 @@ class Bot(commands.Bot):
         self.settings = Settings()
 
     async def send_cmd_help(self, ctx, command=None):
-        msg = "**Command Help:**"
-        color = 0x002B36
+        msg = "**Command Help**"
+        color = ctx.message.server.me.colour
         #[subcom for subcom in bot.commands['birthday'].commands]
 
         em=discord.Embed(description=msg, color=color)
@@ -150,7 +150,7 @@ class Bot(commands.Bot):
         self.start_time = datetime.datetime.now()
         print("Current time is: {}".format(self.start_time))
 
-riceBot = Bot('d!', pm_help = True)
+riceBot = Bot('r`', pm_help = True)
 bot = riceBot
 
 send_cmd_help = bot.send_cmd_help
@@ -169,7 +169,7 @@ riceCog = dataIO.load_json(cogs)
 
 def _load_cogs():
     bot.load_extension('cogs.loader')
-    bot.load_extension('cogs.help')
+    #bot.load_extension('cogs.help')
     for cog in riceCog:
         if riceCog[cog] == True:
             bot.load_extension('cogs.{0}'.format(cog))
