@@ -28,7 +28,7 @@ class Loader():
     @commands.command(name='shutdown', hidden=True)
     async def _shutdown(self):
         await self.bot.say("Shutting down...")
-        await self.bot.shutdown()
+        await self.bot.close()
 
     @checks.is_owner()
     @commands.command()
