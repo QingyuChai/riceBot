@@ -1,4 +1,5 @@
 {
-    "ping" : true,
-    "warn" : true
+    "help" : true,
+    "loader" : true,
+    "ping" : true
 }
