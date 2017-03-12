@@ -1,2 +1,4 @@
 {
+    "ping" : true,
+    "warn" : true
 }

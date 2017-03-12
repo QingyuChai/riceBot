@@ -1,0 +1,12 @@
+{
+    "EMAIL" : null,
+    "OWNER" : null,
+    "PASSWORD" : null,
+    "PREFIXES" : [],
+    "TOKEN" : null,
+    "default" : {
+        "ADMIN_ROLE" : "Transistor",
+        "MOD_ROLE" : "Process",
+        "PREFIXES" : []
+    }
+}

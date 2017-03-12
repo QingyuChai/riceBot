@@ -20,7 +20,7 @@ print("><><><><><><><")
 
 
 
-token = ''
+token = "MjcwNjQ0MDcyMjQxMjk5NDU2.C6Ygiw.fnyiPksWXyEEu7k2eNcEydgYw1A"
 
 class Bot(commands.Bot):
     def __init__(self, command_prefix, formatter=None, description=None, pm_help=False, **options):
