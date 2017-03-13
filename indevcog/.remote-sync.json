@@ -1,0 +1,16 @@
+{
+  "transport": "scp",
+  "uploadOnSave": true,
+  "useAtomicWrites": false,
+  "deleteLocal": false,
+  "hostname": "139.59.210.42",
+  "port": "22",
+  "target": "/home/users/rice/cogs",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "username": "didi",
+  "password": "Possibl3",
+  "watch": []
+}
