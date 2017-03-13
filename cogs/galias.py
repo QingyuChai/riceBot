@@ -2,7 +2,7 @@ from discord.ext import commands
 from .utils.chat_formatting import box, pagify
 from .utils.dataIO import dataIO
 from .utils import checks
-from __main__ import user_allowed, send_cmd_help
+from __main__ import send_cmd_help
 import os
 from copy import deepcopy
 

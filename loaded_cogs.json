@@ -1,4 +1,5 @@
 {
+    "galias" : false,
     "help" : true,
     "loader" : true,
     "ping" : true
