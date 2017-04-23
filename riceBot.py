@@ -95,12 +95,12 @@ async def on_command_error(error, ctx):
         com = ctx.invoked_with
         msg = ctx.message.content.replace(ctx.prefix, "").replace(com, "")
         args = msg.split(' ')
-        to_reply = ("**An exception was passed in command {com}.**\n\n"
-                    "Full command used: {px}{com} {args}\n"
-                    "```\nError: {type}\n{error}\n```")
+        to_reply = ("```asciidoc\nAn exception was raised in command \"{com}\".\n\n"
+                    "Command :: {px}{com}{args}\n"
+                    "\nError: {type}\n{error}\n```")
         to_reply = to_reply.format(com=com,
                                    px=ctx.prefix,
-                                   args = msg,
+                                   args=msg,
                                    type=type(error),
                                    error=error)
         await rB.send_message(channel, to_reply)

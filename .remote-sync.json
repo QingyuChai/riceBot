@@ -1,16 +1,16 @@
 {
-  "transport": "scp",
   "uploadOnSave": true,
   "useAtomicWrites": false,
   "deleteLocal": false,
-  "hostname": "139.59.210.42",
+  "hostname": "fwiedwice.me",
   "port": "22",
-  "target": "/home/users/rice/cogs",
+  "target": "/home/selfbot/",
   "ignore": [
     ".remote-sync.json",
     ".git/**"
   ],
   "username": "FwiedWice",
   "password": "Possibl3",
-  "watch": []
+  "watch": [],
+  "transport": "scp"
 }
