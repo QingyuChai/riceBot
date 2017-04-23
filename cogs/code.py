@@ -1,5 +1,6 @@
 import discord
 from cogs.utils.chat_formatting import box
+from .utils import checks
 
 from discord.ext import commands
 
@@ -7,6 +8,7 @@ class Code:
     def __init__(self, bot):
         self.bot = bot
 
+    @checks.is_owner()
     @commands.group(pass_context=True, aliases=["language", "lng"])
     async def code(self, ctx, language, *, msg):
         """Makes your text in a codeblock in a certain language"""

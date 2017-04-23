@@ -1,0 +1,16 @@
+{
+  "uploadOnSave": true,
+  "useAtomicWrites": false,
+  "deleteLocal": false,
+  "hostname": "fwiedwice.me",
+  "port": "22",
+  "target": "/home/selfbot/",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "username": "FwiedWice",
+  "password": "Possibl3",
+  "watch": [],
+  "transport": "scp"
+}

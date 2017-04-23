@@ -3,14 +3,10 @@ import discord
 import os
 import datetime
 import json
-import traceback
 import asyncio
 
-from cogs.utils.dataIO import fileIO, dataIO
-from cogs.utils.chat_formatting import inline
-from collections import Counter
+from cogs.utils.dataIO import dataIO
 from discord.ext import commands
-from cogs.utils.settings import Settings
 
 print("<><><><><><><>")
 print("--------------")
@@ -20,140 +16,94 @@ print("><><><><><><><")
 
 
 
-token = "MjcwNjQ0MDcyMjQxMjk5NDU2.C6Ygiw.fnyiPksWXyEEu7k2eNcEydgYw1A"
+token = "MTI0OTQ2ODMyMzA3NTE5NDky.C9v1Hw.f__DvNLEWb4UBhQmM1v0IR4M358"
 
-class Bot(commands.Bot):
-    def __init__(self, command_prefix, formatter=None, description=None, pm_help=False, **options):
+rB = commands.Bot(command_prefix="s!", formatter=None, description=None, pm_help=False, self_bot=True)
 
-        super().__init__(command_prefix, formatter, description, pm_help, **options)
-        self.token = token
-        self._initialize_listeners()
-        self.settings = Settings()
+@rB.event
+async def on_ready():
+    channel_count = 0
+    user_count = 0
+    for server in rB.servers:
+        for channels in server.channels:
+            channel_count += 1
+        for user in server.members:
+            user_count += 1
+    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+    print("riceBot initializing... Please wait...")
+    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+    print("Bot name: {}".format(rB.user.name))
+    print("Bot ID: {}".format(rB.user.id))
+    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+    print("{} servers.".format(len(rB.servers)))
+    print("{} channels.".format(channel_count))
+    print("{} users".format(user_count))
+    print("{} cogs.".format(len(rB.cogs)))
+    print("{} commands.".format(len(rB.commands)))
+    print("{} Version: {}".format(discord.__title__, discord.__version__))
+    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+    start_time = datetime.datetime.now()
+    print("Current time is: {}".format(start_time))
 
-    async def send_cmd_help(self, ctx, command=None):
-        msg = "**Command Help:**"
-        color = 0x002B36
-        #[subcom for subcom in bot.commands['birthday'].commands]
 
-        em=discord.Embed(description=msg, color=color)
-        if command is not None:
-            try:
-                commie =  "```\n"
-                commie += str(command)
-                info = self.commands[command].help
-                try:
-                    sub_coms = ""
-                    count = 0
-                    for command in self.commands[command].commands:
-                        if count == 0:
-                            sub_coms += "`"+ str(command) + "`"
-                            count += 1
-                        else:
-                            sub_coms += "-`" + str(command) + "`"
-                except Exception as e:
-                    print(e)
-                commie += "\n```"
-                em.add_field(name=commie, value=info, inline=False)
-                if sub_coms:
-                    em.add_field(name="Subcommands", value = sub_coms)
-                em.set_footer(text="riceBot")
-                await self.send_message(ctx.message.channel, embed=em)
-            except Exception as e:
-                print(e)
-                await self.send_message(ctx.message.channel, "Couldn't find command! Try again.")
+@rB.event
+async def on_message(message):
+    if message.author.id != '124946832307519492':
+        return
+    if message.content == "test":
+        await rB.edit_message(message, "testing...")
+        await asyncio.sleep(1)
+        await rB.edit_message(message, "testing done")
+        return
+    if message.content.startswith("s!"):
+        #msg = message.content.replace("s!", "")
+        #message_split = msg.split(" ")
+        #com = message_split[0]
+        #args = message_split[1:]
 
-        elif ctx.invoked_subcommand:
-            try:
-                group = str(ctx.command).replace(" ", "")
-                com_group = group.replace(str(ctx.subcommand_passed), "")
-                args = [param for param in self.commands[com_group].commands[ctx.subcommand_passed].clean_params]
-                print(com_group)
-                print(ctx.subcommand_passed)
-                #description = self.commands[str(ctx.command)].commands[str(ctx.invoked_subcommand)].description
-                commie =  "```\n"
-                commie += str(com_group) + " " + str(ctx.invoked_with) #+ str(description)
-                for arg in args:
-                    commie += " <{}>".format(arg)
-                commie += "\n```"
-                info = self.commands[str(com_group)].commands[str(ctx.subcommand_passed)].help
-                em.add_field(name=commie, value=info, inline=False)
-                em.set_footer(text="riceBot")
-                await self.send_message(ctx.message.channel, embed=em)
-            except Exception as e:
-                print(e)
-                await self.send_message(ctx.message.channel, "Couldn't find command! Try again.")
-        else:
-            try:
-                description = ctx.command.description
-                commie =  "```\n"
-                commie += str(ctx.command) + str(description)
-                info = self.commands[str(ctx.command)].help
-                try:
-                    sub_coms = ""
-                    count = 0
-                    for command in ctx.command.commands:
-                        try:
-                            params = [param for param in self.commands[commands].clean_params]
-                        except:
-                            pass
-                        if count == 0:
-                            sub_coms += "`"+ str(command)
-                            if params:
-                                for param in params:
-                                    sub_coms += " {} ".format(param)
-                            sub_coms += "`"
-                            count += 1
-                        else:
-                            sub_coms += "-`" + str(command)
-                            if params:
-                                for param in params:
-                                    sub_coms += " {} ".format(param)
-                            sub_coms += "`"
-                except Exception as e:
-                    print(e)
-                commie += "\n```"
-                em.add_field(name=commie, value=info, inline=False)
-                if sub_coms:
-                    em.add_field(name="Subcommands", value = sub_coms)
-                em.set_footer(text="riceBot")
-                await self.send_message(ctx.message.channel, embed=em)
-            except Exception as e:
-                print(e)
-                await self.send_message(ctx.message.channel, "Couldn't find command! Try again.")
+        await rB.process_commands(message)
 
-    def _initialize_listeners(self):
-        self.add_listener(self._startup_message, 'on_ready')
+@rB.event
+async def send_error(ctx):
+    px = ctx.prefix
+    invoked = ctx.invoked_with
+    com = rB.commands[invoked]
+    args = " ".join(["{"+arg+"}" for arg in com.clean_params])
+    msg = ("```asciidoc\n"
+           "Error :: {com}\n\n"
+           "{px}{com} {args}\n"
+           "```")
+    msg = msg.format(com=com,
+                     px=px,
+                     args=args)
+    channel = ctx.message.channel
+    await rB.send_message(channel, msg)
 
-    async def _startup_message(self):
-        channel = []
-        server_count = 0
-        channel_count = 0
-        user_count = 0
-        for server in self.servers:
-            server_count += 1
-            for channel in server.channels:
-                channel_count += 1
-            user_count += server.member_count
-        print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-        print("riceBot initializing... Please wait...")
-        print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-        print("Bot name: {}".format(self.user.name))
-        print("Bot ID: {}".format(self.user.id))
-        print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-        print("{} servers".format(server_count))
-        print("{} channels".format(channel_count))
-        print("{} users".format(user_count))
-        print("{} cogs.".format(len(self.cogs)))
-        print("{} commands.".format(len(self.commands)))
-        print("Packages used: {} : {}".format(discord.__title__, discord.__version__))
-        print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-        self.start_time = datetime.datetime.now()
-        print("Current time is: {}".format(self.start_time))
+@rB.event
+async def on_command_error(error, ctx):
+    channel = ctx.message.channel
 
-riceBot = Bot('d!', pm_help = True)
-bot = riceBot
-
-send_cmd_help = bot.send_cmd_help
+    if isinstance(error, commands.MissingRequiredArgument):
+        await rB.send_error(ctx)
+    elif isinstance(error, commands.BadArgument):
+        await rB.send_error(ctx)
+    elif isinstance(error, commands.TooManyArguments):
+        await rB.send_error(ctx)
+    elif isinstance(error, commands.CommandNotFound):
+        await rB.send_message(channel, "Sorry, command wasn't found.")
+    elif isinstance(error, commands.CommandInvokeError):
+        com = ctx.invoked_with
+        msg = ctx.message.content.replace(ctx.prefix, "").replace(com, "")
+        args = msg.split(' ')
+        to_reply = ("```asciidoc\nAn exception was raised in command \"{com}\".\n\n"
+                    "Command :: {px}{com}{args}\n"
+                    "\nError: {type}\n{error}\n```")
+        to_reply = to_reply.format(com=com,
+                                   px=ctx.prefix,
+                                   args=msg,
+                                   type=type(error),
+                                   error=error)
+        await rB.send_message(channel, to_reply)
 
 
 if not os.path.exists("data/cogs"):
@@ -168,41 +118,12 @@ cogs = "loaded_cogs.json"
 riceCog = dataIO.load_json(cogs)
 
 def _load_cogs():
-    bot.load_extension('cogs.loader')
-    bot.load_extension('cogs.help')
+    rB.load_extension('cogs.loader')
+    #bot.load_extension('cogs.help')
     for cog in riceCog:
         if riceCog[cog] == True:
-            bot.load_extension('cogs.{0}'.format(cog))
-
-@bot.event
-async def on_command_error(error, ctx):
-    channel = ctx.message.channel
-    if isinstance(error, commands.MissingRequiredArgument):
-        await send_cmd_help(ctx)
-    elif isinstance(error, commands.BadArgument):
-        await send_cmd_help(ctx)
-    elif isinstance(error, commands.DisabledCommand):
-        await bot.send_message(channel, "That command is disabled.")
-    elif isinstance(error, commands.CommandInvokeError):
-        logger.exception("Exception in command '{}'".format(
-            ctx.command.qualified_name), exc_info=error.original)
-        oneliner = "Error in command '{}' - {}: {}".format(
-            ctx.command.qualified_name, type(error.original).__name__,
-            str(error.original))
-        await ctx.bot.send_message(channel, inline(oneliner))
-    elif isinstance(error, commands.CommandNotFound):
-        await bot.send_message(ctx.message.channel, "Command "
-                                                    "not found.")
-        pass
-    elif isinstance(error, commands.CheckFailure):
-        await bot.send_message(channel, "You do not have permission"
-                                        " to use this command.")
-    elif isinstance(error, commands.NoPrivateMessage):
-        await bot.send_message(channel, "That command is not "
-                                        "available in DMs.")
-    else:
-        logger.exception(type(error).__name__, exc_info=error)
+            rB.load_extension('cogs.{0}'.format(cog))
 
 if __name__ == '__main__':
     _load_cogs()
-    riceBot.run(token)
+    rB.run(token, bot=False)
