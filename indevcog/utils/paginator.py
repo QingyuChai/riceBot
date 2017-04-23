@@ -7,12 +7,9 @@ class CannotPaginate(Exception):
 class Pages:
     """Implements a paginator that queries the user for the
     pagination interface.
-
     Pages are 1-index based, not 0-index based.
-
     If the user does not reply within 2 minutes then the pagination
     interface exits automatically.
-
     Parameters
     ------------
     bot
@@ -23,7 +20,6 @@ class Pages:
         A list of entries to paginate.
     per_page
         How many entries show up per page.
-
     Attributes
     -----------
     embed: discord.Embed
@@ -89,6 +85,9 @@ class Pages:
         # verify we can actually use the pagination session
         if not self.permissions.add_reactions:
             raise CannotPaginate('Bot does not have add reactions permission.')
+
+        if not self.permissions.read_message_history:
+            raise CannotPaginate('Bot does not have Read Message History permission.')
 
         p.append('')
         p.append('Confused? React with \N{INFORMATION SOURCE} for more info.')
@@ -177,7 +176,7 @@ class Pages:
         self.paginating = False
 
     def react_check(self, reaction, user):
-        if user.id != self.author.id:
+        if user is None or user.id != self.author.id:
             return False
 
         for (emoji, func) in self.reaction_emojis:

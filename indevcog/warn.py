@@ -32,7 +32,7 @@ class Warn:
         self.warning_settings = "data/account/warning_settings.json"
         self.riceCog2 = dataIO.load_json(self.warning_settings)
         try:
-            self._cog = self.bot.get_cog("Mod")
+            self.bot.get_cog("Mod")
         except:
             print("You need the mod cog to properly run warn")
 
@@ -205,7 +205,9 @@ class Warn:
             _max = default_max
 
         #checks if the user is in the file
-
+        if server.id not in self.riceCog2:
+            self.riceCog2[server.id] = {}
+            dataIO.save_json(self.warning_settings, self.riceCog2)
         if server.id not in self.riceCog:
             self.riceCog[server.id] = {}
             dataIO.save_json(self.profile, self.riceCog)
@@ -225,7 +227,7 @@ class Warn:
             count = self.riceCog[server.id][user.id]["Count"]
         else:
             count = 0
-
+        cog = self.bot.get_cog('Mod')
         #checks how many warnings the user has
         if count != _max - 1:
             count += 1
@@ -242,24 +244,6 @@ class Warn:
             await self.bot.say(embed=data)
             self.riceCog[server.id][user.id].update({"Count" : count})
             dataIO.save_json(self.profile, self.riceCog)
-            if reason:
-                await self._cog.new_case(server,
-                                    action="Warning #{}".format(count),
-                                    mod=author,
-                                    user=user,
-                                    reason=reason)
-            else:
-                await self._cog.new_case(server,
-                                    action="Warning #{}".format(count),
-                                    mod=author,
-                                    user=user)
-            if 'poop' in self.riceCog2[server.id]:
-                if self.riceCog2[server.id]['poop'] == True:
-                    try:
-                        await self.bot.change_nickname(user, user.display_name + "💩")
-                    except discord.errors.Forbidden:
-                        await self.bot.say("No permission to change nicknames")
-
         else:
             msg = kick
             msg = msg.replace("user.mention", user.mention)
@@ -278,17 +262,42 @@ class Warn:
             self.riceCog[server.id][user.id].update({"Count" : count})
             dataIO.save_json(self.profile, self.riceCog)
             if reason:
-                await self._cog.new_case(server,
+                await cog.new_case(server,
                                     action="Kicked after {} warnings.".format(_max),
                                     mod=author,
                                     user=user,
                                     reason=reason)
             else:
-                await self._cog.new_case(server,
+                await cog.new_case(server,
                                     action="Kicked after {} warnings.".format(_max),
                                     mod=author,
                                     user=user)
             await self.bot.kick(user)
+        if 'poop' in self.riceCog2[server.id]:
+            if self.riceCog2[server.id]['poop'] == True:
+                try:
+                    await self.bot.change_nickname(user, user.display_name + "💩")
+                except discord.errors.Forbidden:
+                    await self.bot.say("No permission to change nicknames")
+
+            if reason:
+                try:
+                    await cog.new_case(server,
+                                        action="Warning #{}".format(count),
+                                        mod=author,
+                                        user=user,
+                                        reason=reason)
+                except Exception as e:
+                    print(e)
+            else:
+                try:
+
+                    await self.cog.new_case(server,
+                                        action="Warning #{}".format(count),
+                                        mod=author,
+                                        user=user)
+                except Exception as e:
+                    print(e)
 
     @commands.command(no_pm=True, pass_context=True)
     @checks.admin_or_permissions(kick_members=True)

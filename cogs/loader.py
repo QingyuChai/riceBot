@@ -24,6 +24,7 @@ class Loader():
         self.cogs = "loaded_cogs.json"
         self.riceCog = dataIO.load_json(self.cogs)
 
+
     @commands.command()
     @checks.is_owner()
     async def os(self):

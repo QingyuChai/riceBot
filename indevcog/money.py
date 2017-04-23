@@ -299,6 +299,7 @@ class Money:
         self.riceCog[user.id].update({"count" : 0})
         dataIO.save_json(self._money, self.riceCog)
         await asyncio.sleep(300)
+        await self.bot.send_message(user, "{}, your next payday is ready!".format(user.mention))
         self.riceCog[user.id].update({"wait" : False})
         dataIO.save_json(self._money, self.riceCog)
 
