@@ -1,3 +1,10 @@
+"""This is a Discord selfbot made by FwiedWice."""
+
+
+__all__ = ['Discord', 'selfbot', 'userbot']
+__version__ = "1.0.0"
+__author__ = "FwiedWice"
+
 import asyncio
 import discord
 import os
@@ -8,6 +15,8 @@ import asyncio
 from cogs.utils.dataIO import dataIO
 from discord.ext import commands
 
+
+
 print("<><><><><><><>")
 print("--------------")
 print("Starting up...")
@@ -16,12 +25,19 @@ print("><><><><><><><")
 
 
 
-token = "MTI0OTQ2ODMyMzA3NTE5NDky.C9v1Hw.f__DvNLEWb4UBhQmM1v0IR4M358"
+TOKEN = "MTI0OTQ2ODMyMzA3NTE5NDky.C9v1Hw.f__DvNLEWb4UBhQmM1v0IR4M358"
 
-rB = commands.Bot(command_prefix="s!", formatter=None, description=None, pm_help=False, self_bot=True)
+# Define rB as the bot
+rB = commands.Bot(command_prefix="s!",
+                  formatter=None,
+                  description=None,
+                  pm_help=False,
+                  self_bot=True)
 
+# When the bot is connected, this is triggered. It is a bot event.
 @rB.event
 async def on_ready():
+    """Event listener for login"""
     channel_count = 0
     user_count = 0
     for server in rB.servers:
@@ -29,6 +45,8 @@ async def on_ready():
             channel_count += 1
         for user in server.members:
             user_count += 1
+
+    # Print information to console
     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
     print("riceBot initializing... Please wait...")
     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=")
@@ -45,22 +63,11 @@ async def on_ready():
     start_time = datetime.datetime.now()
     print("Current time is: {}".format(start_time))
 
-
 @rB.event
 async def on_message(message):
-    if message.author.id != '124946832307519492':
-        return
-    if message.content == "test":
-        await rB.edit_message(message, "testing...")
-        await asyncio.sleep(1)
-        await rB.edit_message(message, "testing done")
-        return
-    if message.content.startswith("s!"):
-        #msg = message.content.replace("s!", "")
-        #message_split = msg.split(" ")
-        #com = message_split[0]
-        #args = message_split[1:]
-
+    """Event listener for messages"""
+    if (message.author.id == '124946832307519492'
+            and message.content.startswith("s!")):
         await rB.process_commands(message)
 
 @rB.event
@@ -68,6 +75,10 @@ async def send_error(ctx):
     px = ctx.prefix
     invoked = ctx.invoked_with
     com = rB.commands[invoked]
+    channel = ctx.message.channel
+
+
+    # Get the args of the command
     args = " ".join(["{"+arg+"}" for arg in com.clean_params])
     msg = ("```asciidoc\n"
            "Error :: {com}\n\n"
@@ -76,8 +87,8 @@ async def send_error(ctx):
     msg = msg.format(com=com,
                      px=px,
                      args=args)
-    channel = ctx.message.channel
-    await rB.send_message(channel, msg)
+    await rB.send_message(channel
+                          , msg)
 
 @rB.event
 async def on_command_error(error, ctx):
@@ -90,12 +101,14 @@ async def on_command_error(error, ctx):
     elif isinstance(error, commands.TooManyArguments):
         await rB.send_error(ctx)
     elif isinstance(error, commands.CommandNotFound):
-        await rB.send_message(channel, "Sorry, command wasn't found.")
+        await rB.send_message(channel,
+                              "Sorry, command wasn't found.")
     elif isinstance(error, commands.CommandInvokeError):
         com = ctx.invoked_with
         msg = ctx.message.content.replace(ctx.prefix, "").replace(com, "")
         args = msg.split(' ')
-        to_reply = ("```asciidoc\nAn exception was raised in command \"{com}\".\n\n"
+        to_reply = ("```asciidoc\nAn exception was "
+                    "raised in command \"{com}\".\n\n"
                     "Command :: {px}{com}{args}\n"
                     "\nError: {type}\n{error}\n```")
         to_reply = to_reply.format(com=com,
@@ -109,6 +122,7 @@ async def on_command_error(error, ctx):
 if not os.path.exists("data/cogs"):
     print("Creating data/cogs folder")
     os.makedirs("data/cogs")
+
 data = {}
 f = "loaded_cogs.json"
 if not dataIO.is_valid_json(f):
@@ -121,9 +135,9 @@ def _load_cogs():
     rB.load_extension('cogs.loader')
     #bot.load_extension('cogs.help')
     for cog in riceCog:
-        if riceCog[cog] == True:
+        if riceCog[cog]:
             rB.load_extension('cogs.{0}'.format(cog))
 
 if __name__ == '__main__':
     _load_cogs()
-    rB.run(token, bot=False)
+    rB.run(TOKEN, bot=False)
