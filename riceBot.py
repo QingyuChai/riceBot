@@ -16,7 +16,7 @@ print("><><><><><><><")
 
 
 
-token = "MTI0OTQ2ODMyMzA3NTE5NDky.C9v1Hw.f__DvNLEWb4UBhQmM1v0IR4M358"
+token = ""
 
 rB = commands.Bot(command_prefix="s!", formatter=None, description=None, pm_help=False, self_bot=True)
 
